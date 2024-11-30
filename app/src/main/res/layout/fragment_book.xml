@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/gray"
+    tools:context=".Activity.BookFragment.HomeFragment">
+
+    <ImageView
+        android:id="@+id/ivImgMain"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:background="@color/transparent"
+        android:scaleType="fitXY"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/yellow"
+        android:layout_marginBottom="-15dp"
+        android:orientation="horizontal">
+        <ImageButton
+            android:id="@+id/btnPayment"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@color/transparent"
+            android:src="@drawable/baseline_attach_money_24"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="5dp"
+            android:layout_weight="0" />
+        <TextView
+            android:id="@+id/tvAmount"
+            android:layout_width="wrap_content"
+            android:text="money"
+            android:gravity="left"
+            android:textSize="20dp"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"/>
+        <ImageButton
+            android:id="@+id/btnLoveList"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@color/transparent"
+            android:src="@drawable/baseline_favorite_24"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="0" />
+        <ImageButton
+            android:id="@+id/btnWishList"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@color/transparent"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="0"
+            android:src="@drawable/baseline_shopping_cart_24" />
+
+    </LinearLayout>
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/SearchBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/yellow"
+        android:layout_marginVertical="15dp" />
+    <!-- TODO: Update blank fragment layout -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvMainDisplay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/bgv_recycle"
+        android:padding="15dp">
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+</LinearLayout>

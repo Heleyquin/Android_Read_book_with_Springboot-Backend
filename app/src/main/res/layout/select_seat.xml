@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="3dp"
+    android:layout_marginEnd="2dp">
+
+    <ImageView
+        android:id="@+id/ivGhe"
+        android:layout_width="85dp"
+        android:layout_height="80dp"
+        android:background="@drawable/baseline_event_seat_24_none" />
+    <TextView
+        android:id="@+id/tvGhe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:layout_marginStart="28dp"
+        android:textSize="20dp"
+        android:text="10"
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
+</FrameLayout>

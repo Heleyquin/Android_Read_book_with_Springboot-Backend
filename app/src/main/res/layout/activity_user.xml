@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/yellow"
+    tools:context=".Activity.SettingFragment.User">
+
+    <ImageView
+        android:layout_marginTop="100dp"
+        android:id="@+id/ivImage"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:contentDescription="AVATAR"
+        android:src="@drawable/default_reader_male" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20dp">
+
+        <TextView
+            android:id="@+id/tvTen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/bgv_edit_text"
+            android:text="Họ tên"
+            android:textSize="20dp"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="15dp" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tvAmount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Số dư"
+        android:textSize="20dp"
+        android:background="@drawable/bgv_edit_text"
+        android:layout_marginBottom="10dp"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="15dp" />
+
+
+    <TextView
+        android:id="@+id/tvNgayTao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bgv_edit_text"
+        android:layout_marginTop="5dp"
+        android:textSize="20dp"
+        android:text="Ngày tạo"
+        android:layout_marginBottom="10dp"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="15dp" />
+    <TextView
+        android:id="@+id/tvPack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:textSize="20dp"
+        android:background="@drawable/bgv_edit_text"
+        android:text="Gói đăng kí"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="15dp" />
+
+</LinearLayout>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/yellow"
+    tools:context=".Activity.BookFragment.WishActivity">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Danh sách mong muốn"
+        android:textSize="35dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="20dp"
+        android:textStyle="bold"
+        android:gravity="left"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvWish"
+        android:layout_width="match_parent"
+        android:layout_marginTop="100dp"
+        android:paddingBottom="100dp"
+        android:layout_height="wrap_content">
+    </androidx.recyclerview.widget.RecyclerView>
+    <Button
+        android:id="@+id/btnPuchase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="Thanh toán"
+        android:textSize="18dp"
+        android:background="@drawable/bgv_recycle"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="55dp"
+        android:gravity="right"/>
+    <Button
+        android:id="@+id/btnEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="Xoá hết"
+        android:textSize="18dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="10dp"
+        android:gravity="center"/>
+
+
+</FrameLayout>
