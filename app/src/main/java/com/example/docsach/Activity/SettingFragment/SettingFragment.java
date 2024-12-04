@@ -70,7 +70,12 @@ public class SettingFragment extends Fragment {
     private Reader reader;
     private PackInUse packInUse;
     private List<CT_DangKyResponse> ctDangKyResponses;
-    BigDecimal amount;
+    private BigDecimal amount;
+    private String username;
+
+    public SettingFragment(String username) {
+        this.username = username;
+    }
 
     public SettingFragment() {
         // Required empty public constructor
@@ -142,7 +147,7 @@ public class SettingFragment extends Fragment {
         });
     }
     public void fetchUser(){
-        ReaderApi.readerApi.getReaderByUsername("user3").enqueue(new Callback<Reader>() {
+        ReaderApi.readerApi.getReaderByUsername(username).enqueue(new Callback<Reader>() {
             @Override
             public void onResponse(Call<Reader> call, Response<Reader> response) {
                 assert response.body() != null;
@@ -197,6 +202,7 @@ public class SettingFragment extends Fragment {
                             packInUse.setThoiGianDangKy(jsonArray[2]);
                             packInUse.setThoiHan(Integer.parseInt(jsonArray[3]));
                             packInUse.setExpirDate(jsonArray[4]);
+                            packInUse.setActive(Boolean.valueOf(jsonArray[5]));
                         }
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -254,33 +260,37 @@ public class SettingFragment extends Fragment {
                 builder.setView(dialogView);
 
                 if(packInUse != null){
-                    OffsetDateTime offsetDateTime = null;
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                        offsetDateTime = OffsetDateTime.parse(packInUse.getExpirDate());
-                        LocalDateTime localDateTime = offsetDateTime.toLocalDateTime();
-                        LocalDateTime now = LocalDateTime.now();
-                        Duration duration = Duration.between(now, localDateTime);
-                        long dayDiff = duration.toDays();
-                        long hourDiff = duration.toHours();
-                        long minDiff = duration.toMinutes();
-                        long secDiff = duration.getSeconds();
-                        if (!duration.isNegative()) {
-                            if(dayDiff > 0){
-                                tvPack.setText("Gói đang dùng: " + packInUse.getMaGoi() + " .Thời gian còn lại: " + dayDiff + " ngày.");
-                            }else{
-                                if(hourDiff > 0){
-                                    tvPack.setText("Gói đang dùng: " + packInUse.getMaGoi() + " .Thời gian còn lại: " + hourDiff + " giờ.");
+                    if(packInUse.getActive() == true){
+                        OffsetDateTime offsetDateTime = null;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            offsetDateTime = OffsetDateTime.parse(packInUse.getExpirDate());
+                            LocalDateTime localDateTime = offsetDateTime.toLocalDateTime();
+                            LocalDateTime now = LocalDateTime.now();
+                            Duration duration = Duration.between(now, localDateTime);
+                            long dayDiff = duration.toDays();
+                            long hourDiff = duration.toHours();
+                            long minDiff = duration.toMinutes();
+                            long secDiff = duration.getSeconds();
+                            if (!duration.isNegative()) {
+                                if(dayDiff > 0){
+                                    tvPack.setText("Gói đang dùng: " + packInUse.getMaGoi() + " .Thời gian còn lại: " + dayDiff + " ngày.");
                                 }else{
-                                    if(minDiff > 0){
-                                        tvPack.setText("Gói đang dùng: " + packInUse.getMaGoi() + " .Thời gian còn lại: " + minDiff + " phút.");
+                                    if(hourDiff > 0){
+                                        tvPack.setText("Gói đang dùng: " + packInUse.getMaGoi() + " .Thời gian còn lại: " + hourDiff + " giờ.");
                                     }else{
-                                        tvPack.setText("Gói đang dùng: " + packInUse.getMaGoi() + " .Sắp hết hạn");
+                                        if(minDiff > 0){
+                                            tvPack.setText("Gói đang dùng: " + packInUse.getMaGoi() + " .Thời gian còn lại: " + minDiff + " phút.");
+                                        }else{
+                                            tvPack.setText("Gói đang dùng: " + packInUse.getMaGoi() + " .Sắp hết hạn");
+                                        }
                                     }
                                 }
+                            }else{
+                                tvPack.setText("Gói đang dùng: Không có gói nào đang sử dụng.");
                             }
-                        }else{
-                            tvPack.setText("Gói đang dùng: Không có gói nào đang sử dụng.");
                         }
+                    }else{
+                        tvPack.setText("Gói đang dùng: Không có gói nào đang sử dụng.");
                     }
                 }else{
                     tvPack.setText("Gói đang dùng: Không có gói nào đang sử dụng.");

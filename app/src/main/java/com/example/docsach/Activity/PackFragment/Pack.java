@@ -130,9 +130,11 @@ public class Pack extends AppCompatActivity implements BookByPackAdapter.ItemInt
                 sachListFil = new ArrayList<>();
                 sachList = ctGoi.stream()
                         .map(CT_Goi::getSach)
+                        .filter(item -> item.isActive())
                         .collect(Collectors.toList());
                 sachListFil = ctGoi.stream()
                         .map(CT_Goi::getSach)
+                        .filter(item -> item.isActive())
                         .collect(Collectors.toList());
             }
         }

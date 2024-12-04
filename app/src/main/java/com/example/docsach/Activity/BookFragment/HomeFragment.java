@@ -104,12 +104,16 @@ public class HomeFragment extends Fragment implements BooksAdapter.ItemInterface
     private List<LichSuMua> lichSuMuaList;
     private Reader reader;
     BigDecimal amount;
+    private String username;
 //    private List<DanhGiaResponse> danhGiaResponseList;
     private DropInClient dropInClient;
     private double money = 0;
 
-    public HomeFragment() {
-        // Required empty public constructor
+    public HomeFragment(String username) {
+        this.username = username;
+    }
+    public HomeFragment(){
+
     }
 
     /**
@@ -463,7 +467,7 @@ public class HomeFragment extends Fragment implements BooksAdapter.ItemInterface
     }
 
     public void fetchUser(){
-        ReaderApi.readerApi.getReaderByUsername("user3").enqueue(new Callback<Reader>() {
+        ReaderApi.readerApi.getReaderByUsername(username).enqueue(new Callback<Reader>() {
             @Override
             public void onResponse(Call<Reader> call, Response<Reader> response) {
                 assert response.body() != null;

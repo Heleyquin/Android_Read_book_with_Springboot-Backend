@@ -100,9 +100,14 @@ public class PackFragment extends Fragment implements PackAdapter.ItemInterface{
     private List<SuatChieu> dsSuatChieu;
     private List<Phong> dsPhong;
     private List<Ghe> dsGhe;
-    BigDecimal amount;
+    private BigDecimal amount;
+    private String username;
 
     private SearchView SearchBar;
+
+    public PackFragment(String username) {
+        this.username = username;
+    }
 
     public PackFragment() {
         // Required empty public constructor
@@ -260,7 +265,7 @@ public class PackFragment extends Fragment implements PackAdapter.ItemInterface{
         });
     }
     public void fetchUser(){
-        ReaderApi.readerApi.getReaderByUsername("user3").enqueue(new Callback<Reader>() {
+        ReaderApi.readerApi.getReaderByUsername(username).enqueue(new Callback<Reader>() {
             @Override
             public void onResponse(Call<Reader> call, Response<Reader> response) {
                 assert response.body() != null;

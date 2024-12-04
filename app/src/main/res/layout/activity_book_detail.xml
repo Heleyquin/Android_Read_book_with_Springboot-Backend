@@ -70,13 +70,13 @@
             android:textSize="20dp"
             android:layout_marginStart="15dp"
             android:text="Sao"/>
-        <TextView
+        <Button
             android:id="@+id/tvRating"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:text="Rate"
             android:layout_marginStart="15dp"
-            android:textSize="20dp"
+            android:textSize="15dp"
             android:textStyle="bold"/>
     </LinearLayout>
 

@@ -8,20 +8,30 @@ public class PackInUse implements Serializable {
     private String thoiGianDangKy;
     private int thoiHan;
     private String expirDate;
+    private Boolean active;
 
     public PackInUse() {
     }
 
-    public PackInUse(String maGoi, String chuThich, String thoiGianDangKy, int thoiHan, String expirDate) {
+    public PackInUse(String maGoi, String chuThich, String thoiGianDangKy, int thoiHan, String expirDate, Boolean active) {
         this.maGoi = maGoi;
         this.chuThich = chuThich;
         this.thoiGianDangKy = thoiGianDangKy;
         this.thoiHan = thoiHan;
         this.expirDate = expirDate;
+        this.active = active;
     }
 
     public String getMaGoi() {
         return maGoi;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public void setMaGoi(String maGoi) {

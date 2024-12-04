@@ -4,6 +4,7 @@ import com.example.docsach.Model.DTO.CT_DangKyRequest;
 import com.example.docsach.Model.DTO.CT_DangKyResponse;
 import com.example.docsach.Model.DTO.CmtRequest;
 import com.example.docsach.Model.DTO.DanhGiaRequest;
+import com.example.docsach.Model.DTO.DanhGiaResponse;
 import com.example.docsach.Model.DTO.GoiDangKyResponse;
 import com.example.docsach.Model.DTO.LichSuDocRequest;
 import com.example.docsach.Model.DTO.LichSuMuaRequest;
@@ -30,6 +31,8 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
+
 public interface ReaderApi {
     Gson gson = new GsonBuilder()
             .setDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -94,5 +97,10 @@ public interface ReaderApi {
     @POST("reader/purchase")
     Call<ResponseBody> purchaseBooks(@Body PurchaseRequest purchaseRequest);
 
+    @GET("/reader/rate-by-book-reader")
+    Call<DanhGiaResponse> getRateByReaderAndBook(@Query("idSach") Long idSach, @Query("idDocGia") Long idDocGia);
+
+    @POST("/reader/rate")
+    Call<ResponseBody> ratingBook(@Body DanhGiaRequest danhGiaRequest);
 
 }

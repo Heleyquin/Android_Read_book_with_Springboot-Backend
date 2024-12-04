@@ -5,40 +5,40 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.docsach.API.PackApi;
 import com.example.docsach.API.ReaderApi;
 import com.example.docsach.API.SachApi;
-import com.example.docsach.Adapter.BookFragment.NgayChieuAdapter;
-import com.example.docsach.Adapter.BookFragment.RapAdapter;
 import com.example.docsach.Adapter.BookFragment.ViewPagerAdapter;
 import com.example.docsach.Model.CT_Goi;
 import com.example.docsach.Model.CountAllFavor;
 import com.example.docsach.Model.DTO.CmtResponse;
+import com.example.docsach.Model.DTO.DanhGiaRequest;
 import com.example.docsach.Model.DTO.DanhGiaResponse;
 import com.example.docsach.Model.DTO.GoiDangKyResponse;
 import com.example.docsach.Model.DTO.LichSuMuaRequest;
 import com.example.docsach.Model.DTO.PackInUse;
-import com.example.docsach.Model.Ghe;
+import com.example.docsach.Model.Key.Key_DanhGia;
 import com.example.docsach.Model.LichSuMua;
 import com.example.docsach.Model.LuotDocSach;
-import com.example.docsach.Model.Phim;
 import com.example.docsach.Model.Reader;
 import com.example.docsach.Model.Sach;
 import com.example.docsach.Model.Sach_Mong_Muon;
-import com.example.docsach.Model.SuatChieu;
 import com.example.docsach.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -54,19 +54,16 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Set;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Book_Detail extends AppCompatActivity implements NgayChieuAdapter.ItemInterface{
+public class Book_Detail extends AppCompatActivity{
 
 //    private Phim phim;
     private TextView tvDecript, tvTitle, tvReadCount, tvFavorCount, tvAvgPointOfRate, tvNumOfRate;
@@ -75,7 +72,7 @@ public class Book_Detail extends AppCompatActivity implements NgayChieuAdapter.I
     private ImageView[] stars;
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
-    private TextView tvRating;
+    private Button tvRating;
 
     private List<Sach> sachList, sachFavors;
     private List<Sach_Mong_Muon> sachMongMuonList;
@@ -88,7 +85,9 @@ public class Book_Detail extends AppCompatActivity implements NgayChieuAdapter.I
     private List<CmtResponse> cmtResponseList;
     private List<CT_Goi> ctGoiList;
     private PackInUse packInUse;
-    BigDecimal amount;
+    private BigDecimal amount;
+    private DanhGiaResponse danhGiaResponseOnBook;
+
 //    private Rap rap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,13 +99,108 @@ public class Book_Detail extends AppCompatActivity implements NgayChieuAdapter.I
         setControl();
         setDataIntent();
         setDataRate();
-//        getAmount(reader.getId());
         setImage();
 
         tvRating.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+                AlertDialog.Builder builder = new AlertDialog.Builder(Book_Detail.this);
+                LayoutInflater inflater = getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.rating, null);
+
+                RatingBar rtStar;
+                EditText edtNhanXet;
+                Button btnSendRate;
+
+                rtStar = dialogView.findViewById(R.id.rtStar);
+                edtNhanXet = dialogView.findViewById(R.id.edtNhanXet);
+                btnSendRate = dialogView.findViewById(R.id.btnSendRate);
+
+                final int[] point = {1};
+                final String[] nhanXet = {""};
+
+                if(sach != null && reader != null){
+                    ReaderApi.readerApi.getRateByReaderAndBook(sach.getId(), reader.getId()).enqueue(new Callback<DanhGiaResponse>() {
+                        @Override
+                        public void onResponse(Call<DanhGiaResponse> call, Response<DanhGiaResponse> response) {
+                            if(response.isSuccessful()){
+                                danhGiaResponseOnBook = response.body();
+                                if(danhGiaResponseOnBook != null){
+                                    point[0] = danhGiaResponseOnBook.getPoint();
+                                    nhanXet[0] = danhGiaResponseOnBook.getNhanXet();
+                                    rtStar.setRating(point[0]);
+                                    edtNhanXet.setText(nhanXet[0]);
+                                }
+                            }else{
+                                danhGiaResponseOnBook = null;
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<DanhGiaResponse> call, Throwable t) {
+
+                        }
+                    });
+                }
+
+                rtStar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+                    @Override
+                    public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+                        point[0] = (int) v;
+                    }
+                });
+
+                edtNhanXet.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        nhanXet[0] = charSequence.toString();
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                    }
+                });
+                builder.setView(dialogView);
+
+                AlertDialog alertDialog = builder.create();
+
+                btnSendRate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Key_DanhGia keyDanhGia = new Key_DanhGia(sach.getId(), reader.getId());
+                        DanhGiaRequest danhGiaRequest = new DanhGiaRequest(keyDanhGia, point[0], nhanXet[0]);
+                        ReaderApi.readerApi.ratingBook(danhGiaRequest).enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                if(response.isSuccessful()){
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(Book_Detail.this);
+                                    builder.setTitle("Đánh giá thành công" + sach.getTenSach())
+                                            .setMessage("Cảm ơn bạn đã đánh giá " + point[0] + " sao")
+                                            .setPositiveButton("OK", (dialog, which) -> {
+                                                dialog.dismiss();
+                                            })
+                                            .show();
+                                    setDataRate();
+                                    alertDialog.dismiss();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                            }
+                        });
+                    }
+                });
+
+                alertDialog.show();
             }
         });
 
@@ -261,28 +355,34 @@ public class Book_Detail extends AppCompatActivity implements NgayChieuAdapter.I
             }
             else{
                 if(pack != null){
-                    LocalDateTime dateTime = null;
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                        OffsetDateTime offsetDateTime = OffsetDateTime.parse(pack.getExpirDate());
+                    if(pack.getActive()){
+                        LocalDateTime dateTime = null;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            OffsetDateTime offsetDateTime = OffsetDateTime.parse(pack.getExpirDate());
 
-                        LocalDateTime localDateTime = offsetDateTime.toLocalDateTime();
-                        LocalDateTime now = LocalDateTime.now();
+                            LocalDateTime localDateTime = offsetDateTime.toLocalDateTime();
+                            LocalDateTime now = LocalDateTime.now();
 
-                        Duration duration = Duration.between(localDateTime, now);
+                            Duration duration = Duration.between(localDateTime, now);
 
-                        if(duration.isNegative()){
-                            for(CT_Goi ctGoi:ctGoiList){
-                                if(ctGoi.getSach().getId() == sach.getId()){
-                                    btnRead.setVisibility(View.VISIBLE);
-                                    btnBuy.setVisibility(View.VISIBLE);
-                                    btnTry.setVisibility(View.GONE);
+                            if(duration.isNegative()){
+                                for(CT_Goi ctGoi:ctGoiList){
+                                    if(ctGoi.getSach().getId() == sach.getId()){
+                                        btnRead.setVisibility(View.VISIBLE);
+                                        btnBuy.setVisibility(View.VISIBLE);
+                                        btnTry.setVisibility(View.GONE);
+                                    }
                                 }
+                            }else{
+                                btnRead.setVisibility(View.GONE);
+                                btnBuy.setVisibility(View.VISIBLE);
+                                btnTry.setVisibility(View.VISIBLE);
                             }
-                        }else{
-                            btnRead.setVisibility(View.GONE);
-                            btnBuy.setVisibility(View.VISIBLE);
-                            btnTry.setVisibility(View.VISIBLE);
                         }
+                    }else{
+                        btnRead.setVisibility(View.GONE);
+                        btnBuy.setVisibility(View.VISIBLE);
+                        btnTry.setVisibility(View.VISIBLE);
                     }
                 }else{
                     btnRead.setVisibility(View.GONE);
@@ -314,6 +414,7 @@ public class Book_Detail extends AppCompatActivity implements NgayChieuAdapter.I
                                 packInUse.setThoiGianDangKy(jsonArray[2]);
                                 packInUse.setThoiHan(Integer.parseInt(jsonArray[3]));
                                 packInUse.setExpirDate(jsonArray[4]);
+                                packInUse.setActive(Boolean.valueOf(jsonArray[5]));
 
 
                                 fetchBookInPack(packInUse, packInUse.getMaGoi());
@@ -355,28 +456,6 @@ public class Book_Detail extends AppCompatActivity implements NgayChieuAdapter.I
         });
     }
 
-//    private void getAmount(Long id){
-//        ReaderApi.readerApi.getAmountById(id).enqueue(new Callback<ResponseBody>() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                try {
-//                    String result = response.body().string().trim();
-//                    String formated = result.replace(",", ".");
-//                    Double am = Double.parseDouble(formated);
-//                    amount = BigDecimal.valueOf(am);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                amount = null;
-//                Log.i("amount", "failed");
-//            }
-//        });
-//    }
-
     private void setTab(List<CmtResponse> cmtResponseList, List<DanhGiaResponse> danhGiaResponseList){
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this, cmtResponseList, danhGiaResponseList, sach, reader);
         viewPager.setAdapter(viewPagerAdapter);
@@ -389,82 +468,6 @@ public class Book_Detail extends AppCompatActivity implements NgayChieuAdapter.I
             }
         }).attach();
     }
-
-    private void setDataAdapter() {
-//        List<SuatChieu> dsChieuTheoPhim = new ArrayList<>();
-//        for(SuatChieu suat : dsSuatChieu){
-//            if(suat.getId_phim() == phim.getIdPhim()){
-//                dsChieuTheoPhim.add(suat);
-//            }
-//        }
-//        rapAdapter.setData(dsRap, dsPhong, dsChieuTheoPhim, dsGhe, listPhim);
-//        Toast.makeText(getApplicationContext(), String.valueOf(dsChieuTheoPhim.size()), Toast.LENGTH_LONG).show();
-    }
-
-
-//    private void setAdapterrvRap() {
-//        rvRap.addItemDecoration(new SpaceItemDecoration(200));
-//        rvRap.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
-//        rvRap.setAdapter(rapAdapter);
-//    }
-
-//    public void taoRap(){
-//        dsRap = new ArrayList<>();
-//        dsRap.add(new Rap(1, "Rạp Hồ Chí Minh", "Q9, Tp.Thu Duc, TP.HCM"));
-//        dsRap.add(new Rap(2, "Rạp Hà Nội", "Q.Hoàng Mai, P.Hai Bà Trưng, Hà Nội"));
-//        dsRap.add(new Rap(3, "Rạp Thanh Hoá", "P.Tào Xuyên, Tp.Thanh Hoá, Tỉnh Thanh Hoá"));
-//    }
-//    public void taoPhong(){
-//        dsPhong = new ArrayList<>();
-//        dsPhong.add(new Phong(1, "1HCM", 1));
-//        dsPhong.add(new Phong(2, "2HCM", 1));
-//        dsPhong.add(new Phong(3, "3HCM", 1));
-//        dsPhong.add(new Phong(4, "1HN", 2));
-//        dsPhong.add(new Phong(5, "2HN", 2));
-//        dsPhong.add(new Phong(6, "3HN", 2));
-//        dsPhong.add(new Phong(7, "1TH", 3));
-//        dsPhong.add(new Phong(8, "2TH", 3));
-//        dsPhong.add(new Phong(9, "3TH", 3));
-//    }
-//    public void taoGhe(){
-//        dsGhe = new ArrayList<>();
-//        dsGhe.add(new Ghe(1, "D", "1", "1", 1));
-//        dsGhe.add(new Ghe(2, "D", "1", "2", 1));
-//        dsGhe.add(new Ghe(3, "D", "1", "3", 1));
-//        dsGhe.add(new Ghe(4, "D", "1", "4", 1));
-//        dsGhe.add(new Ghe(5, "D", "2", "5", 1));
-//        dsGhe.add(new Ghe(6, "D", "2", "6", 1));
-//        dsGhe.add(new Ghe(7, "D", "2", "7", 1));
-//        dsGhe.add(new Ghe(8, "D", "2", "8", 1));
-//        dsGhe.add(new Ghe(9, "D", "3", "9", 1));
-//        dsGhe.add(new Ghe(10, "D", "3", "10", 1));
-//        dsGhe.add(new Ghe(11, "D", "3", "11", 1));
-//        dsGhe.add(new Ghe(12, "D", "3", "12", 1));
-//        dsGhe.add(new Ghe(13, "D", "3", "13", 1));
-//        dsGhe.add(new Ghe(14, "D", "4", "14", 1));
-//        dsGhe.add(new Ghe(15, "D", "4", "15", 1));
-//        dsGhe.add(new Ghe(16, "D", "4", "16", 1));
-//        dsGhe.add(new Ghe(17, "D", "4", "17", 1));
-//        dsGhe.add(new Ghe(18, "D", "5", "18", 1));
-//        dsGhe.add(new Ghe(19, "D", "5", "19", 1));
-//        dsGhe.add(new Ghe(20, "D", "5", "20", 1));
-//        dsGhe.add(new Ghe(1, "D", "1", "1", 2));
-//    }
-//    public void taoSuatChieu(){
-//        dsSuatChieu = new ArrayList<>();
-//        dsSuatChieu.add(new SuatChieu(1, "10:30", "English", "05/06/2024", "VietSub", 100000, 1, 1, 1));
-//        dsSuatChieu.add(new SuatChieu(2, "12:30", "English", "05/06/2024", "VietSub", 100000, 1, 1, 1));
-//        dsSuatChieu.add(new SuatChieu(3, "13:30", "English", "06/06/2024", "VietSub", 100000, 1, 1, 1));
-//        dsSuatChieu.add(new SuatChieu(4, "10:30", "English", "05/06/2024", "VietSub", 100000, 1, 1,2));
-//        dsSuatChieu.add(new SuatChieu(5, "10:30", "English", "05/06/2024", "VietSub", 100000, 1, 3,2));
-//        dsSuatChieu.add(new SuatChieu(6, "16:30", "English", "06/06/2024", "VietSub", 100000, 1, 1, 3));
-//        dsSuatChieu.add(new SuatChieu(7, "10:30", "English", "07/06/2024", "VietSub", 100000, 1, 2,2));
-//        dsSuatChieu.add(new SuatChieu(8, "10:30", "English", "08/06/2024", "VietSub", 100000, 1, 1,2));
-//        dsSuatChieu.add(new SuatChieu(9, "10:30", "English", "09/06/2024", "VietSub", 100000, 1, 1,2));
-//        dsSuatChieu.add(new SuatChieu(10, "10:30", "English", "10/06/2024", "VietSub", 100000, 1, 1,2));
-//        dsSuatChieu.add(new SuatChieu(11, "10:30", "English", "10/06/2024", "VietSub", 100000, 1, 1,4));
-//    }
-
     private void setDataRate(){
         SachApi.sachApi.getRateById(sach.getId()).enqueue(new Callback<List<DanhGiaResponse>>() {
             @Override
@@ -546,13 +549,6 @@ public class Book_Detail extends AppCompatActivity implements NgayChieuAdapter.I
         tvNumOfRate = findViewById(R.id.tvNumOfRate);
     }
 
-    @Override
-    public void onItemClick(SuatChieu suat, List<Ghe> listGhe, Phim phim) {
-//        Intent intent = new Intent(this, ChonGhe.class);
-//        intent.putExtra("suat", suat);
-//        intent.putExtra("phim", phim);
-//        intent.putExtra("ghe",(Serializable) listGhe);
-//        startActivity(intent);
-    }
+
 
 }
