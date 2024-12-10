@@ -44,12 +44,21 @@ public class MainActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                Intent register_layout = new Intent(MainActivity.this, Home.class);
+//                register_layout.putExtra("username", username.getText().toString());
+//
+//                startActivity(register_layout);
+//                finish();
                 AccountRequest accountRequest = new AccountRequest(username.getText().toString(), password.getText().toString());
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                String jsonWhist = gson.toJson(accountRequest);
+                Log.i("loginAccount", jsonWhist);
                 AccountApi.accountApi.login(accountRequest).enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         String m = null;
                         if(response.isSuccessful()){
+                            Log.i("login", username.getText().toString());
                             assert response.body() != null;
                             try {
                                 m = response.body().string();
@@ -58,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
                                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                         if(response.isSuccessful()){
                                             Intent register_layout = new Intent(MainActivity.this, Home.class);
-
                                             register_layout.putExtra("username", username.getText().toString());
 
                                             startActivity(register_layout);

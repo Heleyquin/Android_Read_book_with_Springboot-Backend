@@ -346,38 +346,33 @@ public class Book_Detail extends AppCompatActivity{
     }
 
     private void setActionUser(PackInUse pack){
-        for (LichSuMua s : lichSuMuaList){
-            if(s.getSachBuy().getId() == sach.getId() && Objects.equals(s.getReaderBuy().getId(), reader.getId())){
+        if(lichSuMuaList.isEmpty()){
+            if(pack != null){
+                if(pack.getActive()){
+                    LocalDateTime dateTime = null;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        OffsetDateTime offsetDateTime = OffsetDateTime.parse(pack.getExpirDate());
 
-                btnRead.setVisibility(View.VISIBLE);
-                btnBuy.setVisibility(View.GONE);
-                btnTry.setVisibility(View.GONE);
-            }
-            else{
-                if(pack != null){
-                    if(pack.getActive()){
-                        LocalDateTime dateTime = null;
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                            OffsetDateTime offsetDateTime = OffsetDateTime.parse(pack.getExpirDate());
+                        LocalDateTime localDateTime = offsetDateTime.toLocalDateTime();
+                        LocalDateTime now = LocalDateTime.now();
 
-                            LocalDateTime localDateTime = offsetDateTime.toLocalDateTime();
-                            LocalDateTime now = LocalDateTime.now();
-
-                            Duration duration = Duration.between(localDateTime, now);
-
-                            if(duration.isNegative()){
-                                for(CT_Goi ctGoi:ctGoiList){
-                                    if(ctGoi.getSach().getId() == sach.getId()){
-                                        btnRead.setVisibility(View.VISIBLE);
-                                        btnBuy.setVisibility(View.VISIBLE);
-                                        btnTry.setVisibility(View.GONE);
-                                    }
+                        Duration duration = Duration.between(localDateTime, now);
+                        if(duration.isNegative()){
+                            for(CT_Goi ctGoi:ctGoiList){
+                                if(ctGoi.getSach().getId() == sach.getId()){
+                                    btnRead.setVisibility(View.VISIBLE);
+                                    btnBuy.setVisibility(View.VISIBLE);
+                                    btnTry.setVisibility(View.GONE);
+                                }else{
+                                    btnRead.setVisibility(View.GONE);
+                                    btnBuy.setVisibility(View.VISIBLE);
+                                    btnTry.setVisibility(View.VISIBLE);
                                 }
-                            }else{
-                                btnRead.setVisibility(View.GONE);
-                                btnBuy.setVisibility(View.VISIBLE);
-                                btnTry.setVisibility(View.VISIBLE);
                             }
+                        }else{
+                            btnRead.setVisibility(View.GONE);
+                            btnBuy.setVisibility(View.VISIBLE);
+                            btnTry.setVisibility(View.VISIBLE);
                         }
                     }else{
                         btnRead.setVisibility(View.GONE);
@@ -389,8 +384,67 @@ public class Book_Detail extends AppCompatActivity{
                     btnBuy.setVisibility(View.VISIBLE);
                     btnTry.setVisibility(View.VISIBLE);
                 }
+            }else{
+                btnRead.setVisibility(View.GONE);
+                btnBuy.setVisibility(View.VISIBLE);
+                btnTry.setVisibility(View.VISIBLE);
+            }
+        }else{
+            for (LichSuMua s : lichSuMuaList){
+                if(s.getSachBuy().getId() == sach.getId() && Objects.equals(s.getReaderBuy().getId(), reader.getId())){
+
+                    btnRead.setVisibility(View.VISIBLE);
+                    btnBuy.setVisibility(View.GONE);
+                    btnTry.setVisibility(View.GONE);
+                }
+                else{
+                    if(pack != null){
+                        if(pack.getActive()){
+                            LocalDateTime dateTime = null;
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                OffsetDateTime offsetDateTime = OffsetDateTime.parse(pack.getExpirDate());
+
+                                LocalDateTime localDateTime = offsetDateTime.toLocalDateTime();
+                                LocalDateTime now = LocalDateTime.now();
+
+                                Duration duration = Duration.between(localDateTime, now);
+
+                                if(duration.isNegative()){
+                                    for(CT_Goi ctGoi:ctGoiList){
+                                        if(ctGoi.getSach().getId() == sach.getId()){
+                                            btnRead.setVisibility(View.VISIBLE);
+                                            btnBuy.setVisibility(View.VISIBLE);
+                                            btnTry.setVisibility(View.GONE);
+                                        }else{
+                                            btnRead.setVisibility(View.GONE);
+                                            btnBuy.setVisibility(View.VISIBLE);
+                                            btnTry.setVisibility(View.VISIBLE);
+                                        }
+                                    }
+                                }else{
+                                    btnRead.setVisibility(View.GONE);
+                                    btnBuy.setVisibility(View.VISIBLE);
+                                    btnTry.setVisibility(View.VISIBLE);
+                                }
+                            }else{
+                                btnRead.setVisibility(View.GONE);
+                                btnBuy.setVisibility(View.VISIBLE);
+                                btnTry.setVisibility(View.VISIBLE);
+                            }
+                        }else{
+                            btnRead.setVisibility(View.GONE);
+                            btnBuy.setVisibility(View.VISIBLE);
+                            btnTry.setVisibility(View.VISIBLE);
+                        }
+                    }else{
+                        btnRead.setVisibility(View.GONE);
+                        btnBuy.setVisibility(View.VISIBLE);
+                        btnTry.setVisibility(View.VISIBLE);
+                    }
+                }
             }
         }
+
 
     }
 
