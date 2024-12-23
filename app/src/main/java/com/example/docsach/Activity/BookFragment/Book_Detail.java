@@ -74,19 +74,16 @@ public class Book_Detail extends AppCompatActivity{
     private ViewPager2 viewPager;
     private Button tvRating;
 
-    private List<Sach> sachList, sachFavors;
-    private List<Sach_Mong_Muon> sachMongMuonList;
     private Sach sach;
     private Reader reader;
     private LuotDocSach luotDocSach;
     private CountAllFavor countAllFavor;
     private List<LichSuMua> lichSuMuaList;
-    private List<DanhGiaResponse> danhGiaResponseList;
-    private List<CmtResponse> cmtResponseList;
     private List<CT_Goi> ctGoiList;
     private PackInUse packInUse;
     private BigDecimal amount;
     private DanhGiaResponse danhGiaResponseOnBook;
+    private List<DanhGiaResponse> danhGiaResponseList;
 
 //    private Rap rap;
     @Override
@@ -294,7 +291,6 @@ public class Book_Detail extends AppCompatActivity{
 
     @SuppressLint("SetTextI18n")
     private void setImage() {
-//        Glide.with(ivImage).load(phim.getAnh()).into(ivImage);
         SachApi.sachApi.getImage(sach.getUrlImg()).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -326,7 +322,6 @@ public class Book_Detail extends AppCompatActivity{
             @Override
             public void onResponse(Call<List<CmtResponse>> call, Response<List<CmtResponse>> response) {
                 assert response.body() != null;
-                cmtResponseList = new ArrayList<>(response.body());
                 setTab(response.body(), danhGiaResponseList);
             }
 
@@ -345,103 +340,106 @@ public class Book_Detail extends AppCompatActivity{
         return formatter.format(amo) + " VND";
     }
 
+    @SuppressLint("SetTextI18n")
     private void setActionUser(PackInUse pack){
-        if(lichSuMuaList.isEmpty()){
-            if(pack != null){
-                if(pack.getActive()){
-                    LocalDateTime dateTime = null;
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                        OffsetDateTime offsetDateTime = OffsetDateTime.parse(pack.getExpirDate());
-
-                        LocalDateTime localDateTime = offsetDateTime.toLocalDateTime();
-                        LocalDateTime now = LocalDateTime.now();
-
-                        Duration duration = Duration.between(localDateTime, now);
-                        if(duration.isNegative()){
-                            for(CT_Goi ctGoi:ctGoiList){
-                                if(ctGoi.getSach().getId() == sach.getId()){
-                                    btnRead.setVisibility(View.VISIBLE);
-                                    btnBuy.setVisibility(View.VISIBLE);
-                                    btnTry.setVisibility(View.GONE);
-                                }else{
-                                    btnRead.setVisibility(View.GONE);
-                                    btnBuy.setVisibility(View.VISIBLE);
-                                    btnTry.setVisibility(View.VISIBLE);
-                                }
-                            }
-                        }else{
-                            btnRead.setVisibility(View.GONE);
-                            btnBuy.setVisibility(View.VISIBLE);
-                            btnTry.setVisibility(View.VISIBLE);
-                        }
-                    }else{
-                        btnRead.setVisibility(View.GONE);
-                        btnBuy.setVisibility(View.VISIBLE);
-                        btnTry.setVisibility(View.VISIBLE);
-                    }
-                }else{
-                    btnRead.setVisibility(View.GONE);
-                    btnBuy.setVisibility(View.VISIBLE);
-                    btnTry.setVisibility(View.VISIBLE);
-                }
-            }else{
-                btnRead.setVisibility(View.GONE);
-                btnBuy.setVisibility(View.VISIBLE);
-                btnTry.setVisibility(View.VISIBLE);
-            }
-        }else{
+        if(!lichSuMuaList.isEmpty()){
             for (LichSuMua s : lichSuMuaList){
-                if(s.getSachBuy().getId() == sach.getId() && Objects.equals(s.getReaderBuy().getId(), reader.getId())){
-
+                if(s.getSachBuy().getId() == sach.getId()){
                     btnRead.setVisibility(View.VISIBLE);
                     btnBuy.setVisibility(View.GONE);
                     btnTry.setVisibility(View.GONE);
+                    break;
                 }
                 else{
                     if(pack != null){
                         if(pack.getActive()){
                             LocalDateTime dateTime = null;
-                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                OffsetDateTime offsetDateTime = OffsetDateTime.parse(pack.getExpirDate());
+                            OffsetDateTime offsetDateTime = OffsetDateTime.parse(pack.getExpirDate());
 
-                                LocalDateTime localDateTime = offsetDateTime.toLocalDateTime();
-                                LocalDateTime now = LocalDateTime.now();
+                            LocalDateTime localDateTime = offsetDateTime.toLocalDateTime();
+                            LocalDateTime now = LocalDateTime.now();
 
-                                Duration duration = Duration.between(localDateTime, now);
-
-                                if(duration.isNegative()){
-                                    for(CT_Goi ctGoi:ctGoiList){
-                                        if(ctGoi.getSach().getId() == sach.getId()){
-                                            btnRead.setVisibility(View.VISIBLE);
-                                            btnBuy.setVisibility(View.VISIBLE);
-                                            btnTry.setVisibility(View.GONE);
-                                        }else{
-                                            btnRead.setVisibility(View.GONE);
-                                            btnBuy.setVisibility(View.VISIBLE);
-                                            btnTry.setVisibility(View.VISIBLE);
-                                        }
+                            Duration duration = Duration.between(localDateTime, now);
+                            if(duration.isNegative()){
+                                for(CT_Goi ctGoi:ctGoiList){
+                                    if(ctGoi.getSach().getId() == sach.getId()){
+                                        btnRead.setVisibility(View.VISIBLE);
+                                        btnBuy.setVisibility(View.VISIBLE);
+                                        btnBuy.setText("Mua ngay (" + formatAmount(sach.getGiaTien()) + ")");
+                                        btnTry.setVisibility(View.GONE);
+                                    }else{
+                                        btnRead.setVisibility(View.GONE);
+                                        btnBuy.setVisibility(View.VISIBLE);
+                                        btnTry.setVisibility(View.VISIBLE);
+                                        btnBuy.setText("Mua ngay (" + formatAmount(sach.getGiaTien()) + ")");
                                     }
-                                }else{
-                                    btnRead.setVisibility(View.GONE);
-                                    btnBuy.setVisibility(View.VISIBLE);
-                                    btnTry.setVisibility(View.VISIBLE);
+                                    break;
                                 }
                             }else{
                                 btnRead.setVisibility(View.GONE);
                                 btnBuy.setVisibility(View.VISIBLE);
                                 btnTry.setVisibility(View.VISIBLE);
+                                btnBuy.setText("Mua ngay (" + formatAmount(sach.getGiaTien()) + ")");
                             }
                         }else{
                             btnRead.setVisibility(View.GONE);
                             btnBuy.setVisibility(View.VISIBLE);
                             btnTry.setVisibility(View.VISIBLE);
+                            btnBuy.setText("Mua ngay (" + formatAmount(sach.getGiaTien()) + ")");
                         }
                     }else{
                         btnRead.setVisibility(View.GONE);
                         btnBuy.setVisibility(View.VISIBLE);
                         btnTry.setVisibility(View.VISIBLE);
+                        btnBuy.setText("Mua ngay (" + formatAmount(sach.getGiaTien()) + ")");
                     }
                 }
+            }
+
+        }
+        else{
+            if(pack != null){
+                if(pack.getActive()){
+                    LocalDateTime dateTime = null;
+                    OffsetDateTime offsetDateTime = OffsetDateTime.parse(pack.getExpirDate());
+
+                    LocalDateTime localDateTime = offsetDateTime.toLocalDateTime();
+                    LocalDateTime now = LocalDateTime.now();
+
+                    Duration duration = Duration.between(localDateTime, now);
+                    if(duration.isNegative()){
+                        for(CT_Goi ctGoi:ctGoiList){
+                            if(ctGoi.getSach().getId() == sach.getId()){
+                                btnRead.setVisibility(View.VISIBLE);
+                                btnBuy.setVisibility(View.VISIBLE);
+                                btnBuy.setText("Mua ngay (" + formatAmount(sach.getGiaTien()) + ")");
+                                btnTry.setVisibility(View.GONE);
+                            }else{
+                                btnRead.setVisibility(View.GONE);
+                                btnBuy.setVisibility(View.VISIBLE);
+                                btnTry.setVisibility(View.VISIBLE);
+                                btnBuy.setText("Mua ngay (" + formatAmount(sach.getGiaTien()) + ")");
+                            }
+                            break;
+                        }
+                    }else{
+                        btnRead.setVisibility(View.GONE);
+                        btnBuy.setVisibility(View.VISIBLE);
+                        btnTry.setVisibility(View.VISIBLE);
+                        btnBuy.setText("Mua ngay (" + formatAmount(sach.getGiaTien()) + ")");
+                    }
+                }else{
+                    btnRead.setVisibility(View.GONE);
+                    btnBuy.setVisibility(View.VISIBLE);
+                    btnTry.setVisibility(View.VISIBLE);
+                    btnBuy.setText("Mua ngay (" + formatAmount(sach.getGiaTien()) + ")");
+                }
+            }
+            else{
+                btnRead.setVisibility(View.GONE);
+                btnBuy.setVisibility(View.VISIBLE);
+                btnTry.setVisibility(View.VISIBLE);
+                btnBuy.setText("Mua ngay (" + formatAmount(sach.getGiaTien()) + ")");
             }
         }
 
@@ -470,19 +468,22 @@ public class Book_Detail extends AppCompatActivity{
                                 packInUse.setExpirDate(jsonArray[4]);
                                 packInUse.setActive(Boolean.valueOf(jsonArray[5]));
 
-
                                 fetchBookInPack(packInUse, packInUse.getMaGoi());
-
                             }
+                            fetchBookInPack(null, null);
                         } catch (IOException e) {
+                            fetchBookInPack(null, null);
                             throw new RuntimeException(e);
                         }
+                    }else{
+                        fetchBookInPack(null, null);
                     }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.i("sackk", "failed");
+                fetchBookInPack(null, null);
             }
         });
     }
@@ -491,21 +492,24 @@ public class Book_Detail extends AppCompatActivity{
             @Override
             public void onResponse(Call<List<GoiDangKyResponse>> call, Response<List<GoiDangKyResponse>> response) {
                 List<GoiDangKyResponse> goiDangKyResponses = new ArrayList<>(response.body());
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    GoiDangKyResponse goiDangKyResponse = goiDangKyResponses.stream()
+                GoiDangKyResponse goiDangKyResponse;
+                if(maGoi != null){
+                    goiDangKyResponse = goiDangKyResponses.stream()
                             .filter(item -> Objects.equals(item.getMaGoi(), maGoi))
                             .findFirst()
                             .orElse(null);
                     if(goiDangKyResponse != null){
                         ctGoiList = new ArrayList<>(goiDangKyResponse.getCtGoiSet());
-                        setActionUser(pack);
                     }
+                    setActionUser(pack);
+                }else{
+                    setActionUser(pack);
                 }
             }
 
             @Override
             public void onFailure(Call<List<GoiDangKyResponse>> call, Throwable t) {
-
+                setActionUser(pack);
             }
         });
     }
@@ -524,20 +528,22 @@ public class Book_Detail extends AppCompatActivity{
     }
     private void setDataRate(){
         SachApi.sachApi.getRateById(sach.getId()).enqueue(new Callback<List<DanhGiaResponse>>() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onResponse(Call<List<DanhGiaResponse>> call, Response<List<DanhGiaResponse>> response) {
-                assert response.body() != null;
-                danhGiaResponseList = new ArrayList<>(response.body());
+                if(response.body() != null){
+                    danhGiaResponseList = new ArrayList<>(response.body());
+                }
                 fetchDataCmt(danhGiaResponseList);
-                if(!response.body().isEmpty()){
+                if(danhGiaResponseList != null && !danhGiaResponseList.isEmpty()){
                     int totalPoint = 0;
-                    for(DanhGiaResponse d:response.body()){
+                    for(DanhGiaResponse d:danhGiaResponseList){
                         totalPoint += d.getPoint();
                     }
-                    double avgPoint = (double) totalPoint /response.body().size();
+                    double avgPoint = (double) totalPoint /danhGiaResponseList.size();
                     avgPoint = Math.round(avgPoint * 100.0)/100.0;
                     tvAvgPointOfRate.setText(avgPoint + "/5 Sao");
-                    tvNumOfRate.setText(response.body().size() + " đánh giá");
+                    tvNumOfRate.setText(danhGiaResponseList.size() + " đánh giá");
                     int i;
                     int fullStar = (int) avgPoint;
                     boolean hasHalfStar = avgPoint - fullStar > 0.0;
@@ -558,7 +564,7 @@ public class Book_Detail extends AppCompatActivity{
 
             @Override
             public void onFailure(Call<List<DanhGiaResponse>> call, Throwable t) {
-
+                fetchDataCmt(danhGiaResponseList);
             }
         });
     }
@@ -566,15 +572,11 @@ public class Book_Detail extends AppCompatActivity{
     private void setDataIntent() {
         Intent intent = getIntent();
         sach = (Sach) intent.getSerializableExtra("sach");
-        sachList = (List<Sach>) intent.getSerializableExtra("sachList");
         luotDocSach = (LuotDocSach) intent.getSerializableExtra("readedCount");
         countAllFavor = (CountAllFavor) intent.getSerializableExtra("favorCount");
-        sachFavors = (List<Sach>) intent.getSerializableExtra("sachFavors");
-        sachMongMuonList = (List<Sach_Mong_Muon>) intent.getSerializableExtra("sachMongMuonList");
         lichSuMuaList = (List<LichSuMua>) intent.getSerializableExtra("lichSuMuaList");
         reader = (Reader) intent.getSerializableExtra("reader");
         amount = (BigDecimal) intent.getSerializableExtra("amount");
-
         assert reader != null;
         fetChPackInUse(reader.getId());
 
@@ -602,7 +604,6 @@ public class Book_Detail extends AppCompatActivity{
         tvAvgPointOfRate = findViewById(R.id.tvAvgPointOfRate);
         tvNumOfRate = findViewById(R.id.tvNumOfRate);
     }
-
 
 
 }

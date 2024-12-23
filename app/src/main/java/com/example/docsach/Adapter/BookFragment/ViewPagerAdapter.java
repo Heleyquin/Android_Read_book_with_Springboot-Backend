@@ -38,7 +38,11 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
         if (position == 0) {
             return new CommentFragment(cmtResponseList, sach, reader);
         } else {
-            return new RateFragment(danhGiaResponseList, sach, reader);
+            if (danhGiaResponseList == null || danhGiaResponseList.isEmpty()) {
+                return new RateFragment(danhGiaResponseList, sach, reader);
+            }else{
+                return new RateFragment(danhGiaResponseList, sach, reader);
+            }
         }
     }
 

@@ -12,17 +12,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.docsach.Activity.BookFragment.HomeFragment;
 import com.example.docsach.Activity.PackFragment.PackFragment;
 import com.example.docsach.Activity.SettingFragment.SettingFragment;
-import com.example.docsach.Model.CountAllFavor;
-import com.example.docsach.Model.LichSuMua;
-import com.example.docsach.Model.LuotDocSach;
-import com.example.docsach.Model.Reader;
-import com.example.docsach.Model.Sach;
-import com.example.docsach.Model.Sach_Mong_Muon;
 import com.example.docsach.R;
 import com.example.docsach.databinding.ActivityHomeBinding;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 public class Home extends AppCompatActivity {
 
@@ -43,7 +34,7 @@ public class Home extends AppCompatActivity {
 
             if(itemId == R.id.home){
                 replaceFragment(new HomeFragment(username));
-            } else if (itemId == R.id.phim) {
+            } else if (itemId == R.id.goiDangKy) {
                 replaceFragment(new PackFragment(username));
 
             }else if (itemId == R.id.setting) {

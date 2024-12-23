@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import com.example.docsach.Model.DTO.DanhGiaResponse;
 import com.example.docsach.Model.Reader;
 import com.example.docsach.Model.Sach;
 import com.example.docsach.R;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -91,11 +94,13 @@ public class RateFragment extends Fragment {
 
         adapter = new RateAdapter();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            danhGiaResponseList.sort((cmt1, cmt2) ->{
-                LocalDateTime time1 = LocalDateTime.parse(cmt1.getThoiGianCapNhat());
-                LocalDateTime time2 = LocalDateTime.parse(cmt2.getThoiGianCapNhat());
-                return time2.compareTo(time1);
+            if(danhGiaResponseList != null){
+                danhGiaResponseList.sort((cmt1, cmt2) ->{
+                    LocalDateTime time1 = LocalDateTime.parse(cmt1.getThoiGianCapNhat());
+                    LocalDateTime time2 = LocalDateTime.parse(cmt2.getThoiGianCapNhat());
+                    return time2.compareTo(time1);
             });
+            }
         }
         adapter.setData(danhGiaResponseList);
         rvRate.setAdapter(adapter);

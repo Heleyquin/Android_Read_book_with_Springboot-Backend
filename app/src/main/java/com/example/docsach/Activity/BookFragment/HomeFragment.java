@@ -49,6 +49,8 @@ import com.example.docsach.Model.Reader;
 import com.example.docsach.Model.Sach;
 import com.example.docsach.Model.Sach_Mong_Muon;
 import com.example.docsach.R;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -272,7 +274,6 @@ public class HomeFragment extends Fragment implements BooksAdapter.ItemInterface
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                         if(charSequence != null){
                             if (!charSequence.toString().matches("[0-9]+")) {
-                                // Nếu không phải số, thì bạn có thể thông báo lỗi hoặc xóa ký tự nhập vào
                                 tvError.setError("Số tiền không hợp lệ, vui lòng nhập lại");
                                 tvError.setVisibility(View.VISIBLE);
                                 btnNap.setVisibility(View.GONE);
@@ -310,7 +311,6 @@ public class HomeFragment extends Fragment implements BooksAdapter.ItemInterface
 
     }
     private void launchDropIn() {
-
         DropInRequest dropInRequest = new DropInRequest(false);
         dropInClient.launchDropIn(dropInRequest);
     }
@@ -356,17 +356,15 @@ public class HomeFragment extends Fragment implements BooksAdapter.ItemInterface
     }
     @Override
     public void onItemClick(View view, int position) {
-        Intent intent = new Intent(view.getContext(), Book_Detail.class);
+        Intent intent = new Intent(getContext(), Book_Detail.class);
 
         intent.putExtra("sach", adapter.getItem(position));
-        intent.putExtra("sachList",(Serializable) adapter.getAll());
         intent.putExtra("favorCount", adapter.getCountFavorItem(adapter.getItem(position)));
         intent.putExtra("readedCount", adapter.getReadedCountItem(adapter.getItem(position)));
-        intent.putExtra("sachFavors",(Serializable) sachFavors);
-        intent.putExtra("sachMongMuonList",(Serializable) sachMongMuonList);
         intent.putExtra("lichSuMuaList",(Serializable) lichSuMuaList);
         intent.putExtra("reader", reader);
         intent.putExtra("amount", amount);
+
         startActivity(intent);
     }
 

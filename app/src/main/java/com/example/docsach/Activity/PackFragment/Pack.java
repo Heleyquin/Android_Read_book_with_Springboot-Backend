@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -29,6 +30,8 @@ import com.example.docsach.Model.Sach;
 import com.example.docsach.Model.Sach_Mong_Muon;
 import com.example.docsach.Model.SuatChieu;
 import com.example.docsach.R;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -40,18 +43,10 @@ import java.util.stream.Collectors;
 
 public class Pack extends AppCompatActivity implements BookByPackAdapter.ItemInterface{
 
-    private List<Phim> dsPhim, dsPhimFil;
-    private List<SuatChieu> dsSuatChieu;
-    private List<Ghe> dsGhe;
-    private Rap rap;
-    private List<Phong> dsPhong;
-
-    private GoiDangKyResponse goiDangKyResponse;
     private List<Sach> sachList, sachListFil, sachFavors;
 
     private List<CountAllFavor> countAllFavors;
     private List<LuotDocSach> luotDocSaches;
-    private List<Sach_Mong_Muon> sachMongMuonList;
     private List<LichSuMua> lichSuMuaList;
     private Reader reader;
     BigDecimal amount;
@@ -113,39 +108,29 @@ public class Pack extends AppCompatActivity implements BookByPackAdapter.ItemInt
     @SuppressLint("SetTextI18n")
     private void setDataIntent() {
         Intent intent = getIntent();
-        goiDangKyResponse = (GoiDangKyResponse) intent.getSerializableExtra("pack");
+        GoiDangKyResponse goiDangKyResponse = (GoiDangKyResponse) intent.getSerializableExtra("pack");
         reader = (Reader) intent.getSerializableExtra("reader");
         sachFavors = (List<Sach>) intent.getSerializableExtra("sachFavors");
-        sachMongMuonList = (List<Sach_Mong_Muon>) intent.getSerializableExtra("sachMongMuonList");
         lichSuMuaList = (List<LichSuMua>) intent.getSerializableExtra("lichSuMuaList");
         luotDocSaches = (List<LuotDocSach>)  intent.getSerializableExtra("luotDoc");
         countAllFavors = (List<CountAllFavor>) intent.getSerializableExtra("countFavors");
         amount = (BigDecimal) intent.getSerializableExtra("amount");
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                assert goiDangKyResponse != null;
-                tvMaGoi.setText("Gói " + goiDangKyResponse.getMaGoi() + "\n" + goiDangKyResponse.getChuThich());
-                List<CT_Goi> ctGoi = goiDangKyResponse.getCtGoiSet().stream().toList();
-                sachList = new ArrayList<>();
-                sachListFil = new ArrayList<>();
-                sachList = ctGoi.stream()
-                        .map(CT_Goi::getSach)
-                        .filter(item -> item.isActive())
-                        .collect(Collectors.toList());
-                sachListFil = ctGoi.stream()
-                        .map(CT_Goi::getSach)
-                        .filter(item -> item.isActive())
-                        .collect(Collectors.toList());
-            }
-        }
+
+        assert goiDangKyResponse != null;
+        tvMaGoi.setText("Gói " + goiDangKyResponse.getMaGoi() + "\n" + goiDangKyResponse.getChuThich());
+        List<CT_Goi> ctGoi = goiDangKyResponse.getCtGoiSet().stream().toList();
+        sachList = new ArrayList<>();
+        sachListFil = new ArrayList<>();
+        sachList = ctGoi.stream()
+                .map(CT_Goi::getSach)
+                .filter(item -> item.isActive())
+                .collect(Collectors.toList());
+        sachListFil = ctGoi.stream()
+                .map(CT_Goi::getSach)
+                .filter(item -> item.isActive())
+                .collect(Collectors.toList());
 
 
-//        dsPhim = (List<Phim>) intent.getSerializableExtra("phims");
-//        dsGhe = (List<Ghe>) intent.getSerializableExtra("ghes");
-//        dsSuatChieu = (List<SuatChieu>) intent.getSerializableExtra("suats");
-//        rap = (Rap) intent.getSerializableExtra("rap");
-//        dsPhimFil = new ArrayList<>();
-//        dsPhimFil.addAll(dsPhim);
     }
     @SuppressLint("SetTextI18n")
     private void setControl(){
@@ -158,7 +143,7 @@ public class Pack extends AppCompatActivity implements BookByPackAdapter.ItemInt
         rvBook.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         rvBook.setAdapter(adapter);
 
-        adapter.setData(sachList, countAllFavors, luotDocSaches, sachMongMuonList, lichSuMuaList, reader, sachFavors);
+        adapter.setData(sachList, countAllFavors, luotDocSaches, sachFavors);
 
     }
 
@@ -167,11 +152,8 @@ public class Pack extends AppCompatActivity implements BookByPackAdapter.ItemInt
         Intent intent = new Intent(view.getContext(), Book_Detail.class);
 
         intent.putExtra("sach", adapter.getItem(position));
-        intent.putExtra("sachList",(Serializable) adapter.getAll());
         intent.putExtra("favorCount", adapter.getCountFavorItem(adapter.getItem(position)));
         intent.putExtra("readedCount", adapter.getReadedCountItem(adapter.getItem(position)));
-        intent.putExtra("sachFavors",(Serializable) sachFavors);
-        intent.putExtra("sachMongMuonList",(Serializable) sachMongMuonList);
         intent.putExtra("lichSuMuaList",(Serializable) lichSuMuaList);
         intent.putExtra("reader", reader);
         intent.putExtra("amount", amount);

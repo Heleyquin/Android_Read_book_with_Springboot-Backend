@@ -8,12 +8,8 @@
         tools:ignore="HardcodedText" />
     <item android:title="Gói đăng ký"
         android:icon="@drawable/ic_pack_icon"
-        android:id="@+id/phim"
+        android:id="@+id/goiDangKy"
         tools:ignore="HardcodedText" />
-<!--    <item android:title="Lịch sử"-->
-<!--        android:icon="@drawable/baseline_history_24"-->
-<!--        android:id="@+id/history"-->
-<!--        tools:ignore="HardcodedText" />-->
     <item android:title="Tài khoản"
         android:icon="@drawable/baseline_app_settings_alt_24"
         android:id="@+id/setting"

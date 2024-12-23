@@ -48,18 +48,10 @@ import retrofit2.Response;
 
 public class BookByPackAdapter extends RecyclerView.Adapter<BookByPackAdapter.ItemViewHolder> {
     private final ItemInterface itemInterface;
-    private List<Phim> data;
-    private List<SuatChieu> dsSuat;
-    private List<Ghe> dsGhe;
-    private List<Phong> dsPhong;
-    private Rap rap;
 
     private List<Sach> sachList, sachFavors;
     private List<CountAllFavor> countAllFavors;
     private List<LuotDocSach> luotDocSaches;
-    private List<Sach_Mong_Muon> sachMongMuonList;
-    private List<LichSuMua> lichSuMuaList;
-    private Reader reader;
 
     private Context context;
 
@@ -69,13 +61,10 @@ public class BookByPackAdapter extends RecyclerView.Adapter<BookByPackAdapter.It
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setData(List<Sach> list, List<CountAllFavor> countAllFavors,List<LuotDocSach> luotDocSaches, List<Sach_Mong_Muon> sachMongMuonList, List<LichSuMua> lichSuMuaList, Reader reader, List<Sach> sachFavors) {
+    public void setData(List<Sach> list, List<CountAllFavor> countAllFavors,List<LuotDocSach> luotDocSaches, List<Sach> sachFavors) {
         this.sachList = list;
         this.countAllFavors = countAllFavors;
         this.luotDocSaches = luotDocSaches;
-        this.sachMongMuonList = sachMongMuonList;
-        this.lichSuMuaList = lichSuMuaList;
-        this.reader = reader;
         this.sachFavors = sachFavors;
         notifyDataSetChanged();
     }
@@ -123,23 +112,20 @@ public class BookByPackAdapter extends RecyclerView.Adapter<BookByPackAdapter.It
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, @SuppressLint("RecyclerView") int position) {
-
         Sach sach = sachList.get(position);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            CountAllFavor bookWithFavorCount = countAllFavors.stream()
-                    .filter(item -> item.getId() == sach.getId())
-                    .findFirst()
-                    .orElse(null);
-            if (bookWithFavorCount != null){
-                holder.tvFavorCount.setText(bookWithFavorCount.getFavor_count().toString());
-            }
-            LuotDocSach luotDocSach = luotDocSaches.stream()
-                    .filter(item -> item.getId() == sach.getId())
-                    .findFirst()
-                    .orElse(null);
-            if(luotDocSach != null){
-                holder.tvReadCount.setText(luotDocSach.getSo_luot_doc().toString());
-            }
+        CountAllFavor bookWithFavorCount = countAllFavors.stream()
+                .filter(item -> item.getId() == sach.getId())
+                .findFirst()
+                .orElse(null);
+        if (bookWithFavorCount != null){
+            holder.tvFavorCount.setText(bookWithFavorCount.getFavor_count().toString());
+        }
+        LuotDocSach luotDocSach = luotDocSaches.stream()
+                .filter(item -> item.getId() == sach.getId())
+                .findFirst()
+                .orElse(null);
+        if(luotDocSach != null){
+            holder.tvReadCount.setText(luotDocSach.getSo_luot_doc().toString());
         }
         SachApi.sachApi.getImage(sach.getUrlImg()).enqueue(new Callback<ResponseBody>() {
             @Override

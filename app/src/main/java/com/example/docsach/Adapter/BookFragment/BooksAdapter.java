@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -104,7 +106,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ItemViewHold
         return sachList.get(pos);
     }
     public CountAllFavor getCountFavorItem(Sach sach){
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             CountAllFavor bookWithFavorCount = countAllFavors.stream()
                     .filter(item -> item.getId() == sach.getId())
                     .findFirst()
@@ -116,7 +118,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ItemViewHold
         return null;
     }
     public LuotDocSach getReadedCountItem(Sach sach){
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             LuotDocSach luotDocSach = luotDocSaches.stream()
                     .filter(item -> item.getId() == sach.getId())
                     .findFirst()
@@ -141,7 +143,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ItemViewHold
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Sach sach = sachList.get(position);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             CountAllFavor bookWithFavorCount = countAllFavors.stream()
                     .filter(item -> item.getId() == sach.getId())
                     .findFirst()
@@ -202,34 +204,47 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ItemViewHold
         SachApi.sachApi.getRateById(sach.getId()).enqueue(new Callback<List<DanhGiaResponse>>() {
             @Override
             public void onResponse(Call<List<DanhGiaResponse>> call, Response<List<DanhGiaResponse>> response) {
-                assert response.body() != null;
-                if(!response.body().isEmpty()){
-                    int totalPoint = 0;
-                    for(DanhGiaResponse d:response.body()){
+                List<DanhGiaResponse> danhGiaResponseList = new ArrayList<>(response.body());
+                int totalPoint = 0;
+                double avgPoint = 0;
+                if (!danhGiaResponseList.isEmpty()) {
+                    for (DanhGiaResponse d : danhGiaResponseList) {
                         totalPoint += d.getPoint();
                     }
-                    double avgPoint = (double) totalPoint /response.body().size();
-                    avgPoint = Math.round(avgPoint * 100.0)/100.0;
-                    holder.tvAvgPointOfRate.setText(avgPoint + "/5 Sao");
-                    int i;
-                    int fullStar = (int) avgPoint;
-                    boolean hasHalfStar = avgPoint - fullStar > 0.0;
-                    for(i = 0; i < fullStar; i++){
-                        holder.stars[i].setImageResource(R.drawable.ic_start_yellow);
-                    }
-                    if(hasHalfStar){
-                        holder.stars[i].setImageResource(R.drawable.baseline_star_half_24);
-                    }
-                }else{
-                    for(int i = 0; i < 5; i++){
-                        holder.stars[i].setImageResource(R.drawable.ic_start_yellow);
-                    }
-                    holder.tvAvgPointOfRate.setText("/5 sao");
+                    avgPoint = (double) totalPoint / danhGiaResponseList.size();
+                    avgPoint = Math.round(avgPoint * 100.0) / 100.0;
+
                 }
+
+                holder.tvAvgPointOfRate.setText(avgPoint + "/5 Sao");
+                int fullStar = (int) avgPoint;
+                boolean hasHalfStar = avgPoint - fullStar > 0.0;
+
+                if(fullStar <= 0){
+                    for(int i = 0; i < holder.stars.length; i++){
+                        holder.stars[i].setImageResource(R.drawable.ic_start_empty);
+                    }
+                }
+                else{
+                    for (int i = 0; i < holder.stars.length; i++) {
+                        if (i < fullStar) {
+                            holder.stars[i].setImageResource(R.drawable.ic_start_yellow);
+                        } else if (hasHalfStar && i == fullStar) {
+                            holder.stars[i].setImageResource(R.drawable.baseline_star_half_24);
+                        }
+                    }
+                }
+
             }
 
             @Override
             public void onFailure(Call<List<DanhGiaResponse>> call, Throwable t) {
+                int totalPoint = 0;
+                double avgPoint = 0;
+                holder.tvAvgPointOfRate.setText(avgPoint + "/5 Sao");
+                for(int i = 0; i < holder.stars.length; i++){
+                    holder.stars[i].setImageResource(R.drawable.ic_start_empty);
+                }
 
             }
         });

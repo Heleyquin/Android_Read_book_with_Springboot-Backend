@@ -196,11 +196,13 @@ public class CommentFragment extends Fragment {
 
         adapter = new CommentAdapter();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            cmtResponseList.sort((cmt1, cmt2) ->{
-                LocalDateTime time1 = LocalDateTime.parse(cmt1.getId().getThoiGianTao());
-                LocalDateTime time2 = LocalDateTime.parse(cmt2.getId().getThoiGianTao());
-                return time2.compareTo(time1);
-            });
+            if(cmtResponseList != null){
+                cmtResponseList.sort((cmt1, cmt2) ->{
+                    LocalDateTime time1 = LocalDateTime.parse(cmt1.getId().getThoiGianTao());
+                    LocalDateTime time2 = LocalDateTime.parse(cmt2.getId().getThoiGianTao());
+                    return time2.compareTo(time1);
+                });
+            }
         }
         adapter.setData(cmtResponseList);
         rvCmt.setAdapter(adapter);

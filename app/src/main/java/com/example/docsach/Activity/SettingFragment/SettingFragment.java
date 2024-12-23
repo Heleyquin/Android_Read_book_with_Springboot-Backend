@@ -243,9 +243,6 @@ public class SettingFragment extends Fragment {
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(view.getContext(), User.class);
-//                intent.putExtra("user", user);
-//                startActivity(intent);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 LayoutInflater inflater = getLayoutInflater();
@@ -319,14 +316,14 @@ public class SettingFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(view.getContext(), History.class);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                if (lichSuMuaList != null) {
                     lichSuMuaList.sort((m1, m2) ->{
                         LocalDateTime time1 = LocalDateTime.parse(m1.getThoiGianMua());
                         LocalDateTime time2 = LocalDateTime.parse(m2.getThoiGianMua());
                         return time2.compareTo(time1);
                     });
                 }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                if (ctDangKyResponses != null) {
                     ctDangKyResponses.sort((ct1, ct2) ->{
                         LocalDateTime time1 = LocalDateTime.parse(ct1.getId().getThoiGianDangKy());
                         LocalDateTime time2 = LocalDateTime.parse(ct2.getId().getThoiGianDangKy());
@@ -344,7 +341,7 @@ public class SettingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(view.getContext(), ReadHistory.class);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                if (lichSuDocList != null) {
                     lichSuDocList.sort((l1, l2) ->{
                         LocalDateTime time1 = LocalDateTime.parse(l1.getThoiGian());
                         LocalDateTime time2 = LocalDateTime.parse(l2.getThoiGian());

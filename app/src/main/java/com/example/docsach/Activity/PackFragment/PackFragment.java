@@ -43,6 +43,7 @@ import com.example.docsach.Model.Sach_Mong_Muon;
 import com.example.docsach.Model.SuatChieu;
 import com.example.docsach.R;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -207,6 +208,9 @@ public class PackFragment extends Fragment implements PackAdapter.ItemInterface{
     private void setData() {
         rvGoi.setLayoutManager(new LinearLayoutManager(getContext()));
         rvGoi.setAdapter(packAdapter);
+//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//        String jsonWhist = gson.toJson(packAdapter);
+//        Log.i("người dùng", jsonWhist);
     }
     private void fetchPacks(){
         PackApi.packApi.allPacks().enqueue(new Callback<List<GoiDangKyResponse>>() {
@@ -375,11 +379,9 @@ public class PackFragment extends Fragment implements PackAdapter.ItemInterface{
         intent.putExtra("pack", goiDangKyResponse);
         intent.putExtra("reader", reader);
         intent.putExtra("sachFavors",(Serializable) sachFavors);
-        intent.putExtra("sachMongMuonList",(Serializable) sachMongMuonList);
         intent.putExtra("lichSuMuaList",(Serializable) lichSuMuaList);
         intent.putExtra("luotDoc",(Serializable) luotDocSaches);
         intent.putExtra("countFavors", (Serializable) countAllFavors);
-        intent.putExtra("reader", reader);
         intent.putExtra("amount", amount);
 
         startActivity(intent);
@@ -637,96 +639,4 @@ public class PackFragment extends Fragment implements PackAdapter.ItemInterface{
         fetchUser();
         fetchBooks();
     }
-    //    private List<SuatChieu> getSuatChieuByRap(int idRap) {
-//        List<SuatChieu> listSuatChieuOfRap;
-//        List<Phong> phongOfRap = new ArrayList<>();
-//        for(Phong p : dsPhong){
-//            if(p.getId_rap() == idRap){
-//                phongOfRap.add(p);
-//            }
-//        }
-//        Set<Integer> phongIds = phongOfRap.stream()
-//                .map(Phong::getIdPhong)
-//                .collect(Collectors.toSet());
-//        listSuatChieuOfRap = dsSuatChieu.stream()
-//                .filter(suat -> phongIds.contains(suat.getId_phong()))
-//                .collect(Collectors.toList());
-//        return listSuatChieuOfRap;
-//    }
-//    private List<Phim> getPhimBySuat(@NonNull List<SuatChieu> suatByRap){
-//        List<Phim> phimByRap;
-//        Set<Integer> suatIdPhims = suatByRap.stream()
-//                .map(SuatChieu::getId_phim)
-//                .collect(Collectors.toSet());
-//        phimByRap = dsPhim.stream()
-//                .filter(phim -> suatIdPhims.contains(phim.getIdPhim()))
-//                .collect(Collectors.toList());
-//        return phimByRap;
-//    }
-//    public void taoPhong(){
-//        dsPhong = new ArrayList<>();
-//        dsPhong.add(new Phong(1, "1HCM", 1));
-//        dsPhong.add(new Phong(2, "2HCM", 1));
-//        dsPhong.add(new Phong(3, "3HCM", 1));
-//        dsPhong.add(new Phong(4, "1HN", 2));
-//        dsPhong.add(new Phong(5, "2HN", 2));
-//        dsPhong.add(new Phong(6, "3HN", 2));
-//        dsPhong.add(new Phong(7, "1TH", 3));
-//        dsPhong.add(new Phong(8, "2TH", 3));
-//        dsPhong.add(new Phong(9, "3TH", 3));
-//    }
-//    public void taoGhe(){
-//        dsGhe = new ArrayList<>();
-//        dsGhe.add(new Ghe(1, "D", "1", "1", 1));
-//        dsGhe.add(new Ghe(2, "D", "1", "2", 1));
-//        dsGhe.add(new Ghe(3, "D", "1", "3", 1));
-//        dsGhe.add(new Ghe(4, "D", "1", "4", 1));
-//        dsGhe.add(new Ghe(5, "D", "2", "5", 1));
-//        dsGhe.add(new Ghe(6, "D", "2", "6", 1));
-//        dsGhe.add(new Ghe(7, "D", "2", "7", 1));
-//        dsGhe.add(new Ghe(8, "D", "2", "8", 1));
-//        dsGhe.add(new Ghe(9, "D", "3", "9", 1));
-//        dsGhe.add(new Ghe(10, "D", "3", "10", 1));
-//        dsGhe.add(new Ghe(11, "D", "3", "11", 1));
-//        dsGhe.add(new Ghe(12, "D", "3", "12", 1));
-//        dsGhe.add(new Ghe(13, "D", "3", "13", 1));
-//        dsGhe.add(new Ghe(14, "D", "4", "14", 1));
-//        dsGhe.add(new Ghe(15, "D", "4", "15", 1));
-//        dsGhe.add(new Ghe(16, "D", "4", "16", 1));
-//        dsGhe.add(new Ghe(17, "D", "4", "17", 1));
-//        dsGhe.add(new Ghe(18, "D", "5", "18", 1));
-//        dsGhe.add(new Ghe(19, "D", "5", "19", 1));
-//        dsGhe.add(new Ghe(20, "D", "5", "20", 1));
-//        dsGhe.add(new Ghe(1, "D", "1", "1", 2));
-//    }
-//    public void taoSuatChieu(){
-//        dsSuatChieu = new ArrayList<>();
-//        dsSuatChieu.add(new SuatChieu(1, "10:30", "English", "05/06/2024", "VietSub", 100000, 1, 1, 1));
-//        dsSuatChieu.add(new SuatChieu(2, "12:30", "English", "05/06/2024", "VietSub", 100000, 1, 1, 1));
-//        dsSuatChieu.add(new SuatChieu(3, "13:30", "English", "06/06/2024", "VietSub", 100000, 1, 1, 1));
-//        dsSuatChieu.add(new SuatChieu(4, "10:30", "English", "05/06/2024", "VietSub", 100000, 1, 1,2));
-//        dsSuatChieu.add(new SuatChieu(5, "10:30", "English", "05/06/2024", "VietSub", 100000, 1, 3,2));
-//        dsSuatChieu.add(new SuatChieu(6, "16:30", "English", "06/06/2024", "VietSub", 100000, 1, 1, 3));
-//        dsSuatChieu.add(new SuatChieu(7, "10:30", "English", "07/06/2024", "VietSub", 100000, 1, 2,2));
-//        dsSuatChieu.add(new SuatChieu(8, "10:30", "English", "08/06/2024", "VietSub", 100000, 1, 1,2));
-//        dsSuatChieu.add(new SuatChieu(9, "10:30", "English", "09/06/2024", "VietSub", 100000, 1, 1,2));
-//        dsSuatChieu.add(new SuatChieu(10, "10:30", "English", "10/06/2024", "VietSub", 100000, 1, 1,2));
-//        dsSuatChieu.add(new SuatChieu(11, "10:30", "English", "10/06/2024", "VietSub", 100000, 1, 1,4));
-//    }
-//    private void taoPhim() {
-//        dsPhim = new ArrayList<>();
-//        dsPhim.add(new Phim(1, "https://files.betacorp.vn/media%2fimages%2f2024%2f05%2f28%2f310524%2Dgarfield%2D150640%2D280524%2D95.jpg", "Phim1", "QuocGia", "29/06/2015","Trang thai", 102, "Mo ta", true, 1));
-//        dsPhim.add(new Phim(2, "https://files.betacorp.vn/media%2fimages%2f2024%2f04%2f24%2f240524%2Ddraft%2Ddoraemon%2D170958%2D240424%2D90.png", "Phim2", "QuocGia", "03/05/2024", "Trang thai", 95, "Mo ta", true, 1));
-//        dsPhim.add(new Phim(3, "https://files.betacorp.vn/media%2fimages%2f2024%2f05%2f27%2f400x633%2D7%2D151139%2D270524%2D46.jpg", "Phim3", "QuocGia", "23/04/2024", "Trang thai", 120, "Mo ta", false, 1));
-//        dsPhim.add(new Phim(4, "https://files.betacorp.vn/media%2fimages%2f2024%2f05%2f24%2f400x633%2D6%2D103906%2D240524%2D41.jpg", "Phim4", "QuocGia", "22/04/2024", "Trang thai", 84, "Mo ta", true, 1));
-//        dsPhim.add(new Phim(5, "https://files.betacorp.vn/media%2fimages%2f2024%2f05%2f28%2f070624%2Dsneak%2Dmong%2Dvuot%2D150957%2D280524%2D53.jpg", "Phim5", "QuocGia", "11/04/2024", "Trang thai", 99, "Mo ta", true, 1));
-//    }
-//    public void taoRap(){
-//        dsRap = new ArrayList<>();
-//        dsRap.add(new Rap(1, "Rạp Hồ Chí Minh", "Q9, Tp.Thu Duc, TP.HCM"));
-//        dsRap.add(new Rap(2, "Rạp Hà Nội", "Q.Hoàng Mai, P.Hai Bà Trưng, Hà Nội"));
-//        dsRap.add(new Rap(3, "Rạp Thanh Hoá", "P.Tào Xuyên, Tp.Thanh Hoá, Tỉnh Thanh Hoá"));
-//        dsRapFil = new ArrayList<>();
-//        dsRapFil.addAll(dsRap);
-//    }
 }
