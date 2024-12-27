@@ -367,31 +367,37 @@ public class Book_Detail extends AppCompatActivity{
                                         btnBuy.setVisibility(View.VISIBLE);
                                         btnBuy.setText("Mua ngay (" + formatAmount(sach.getGiaTien()) + ")");
                                         btnTry.setVisibility(View.GONE);
+                                        Log.i("người dùng", "1");
+                                        break;
                                     }else{
                                         btnRead.setVisibility(View.GONE);
                                         btnBuy.setVisibility(View.VISIBLE);
                                         btnTry.setVisibility(View.VISIBLE);
                                         btnBuy.setText("Mua ngay (" + formatAmount(sach.getGiaTien()) + ")");
+                                        Log.i("người dùng", "2");
                                     }
-                                    break;
                                 }
                             }else{
                                 btnRead.setVisibility(View.GONE);
                                 btnBuy.setVisibility(View.VISIBLE);
                                 btnTry.setVisibility(View.VISIBLE);
                                 btnBuy.setText("Mua ngay (" + formatAmount(sach.getGiaTien()) + ")");
+                                Log.i("người dùng", "3");
                             }
                         }else{
                             btnRead.setVisibility(View.GONE);
                             btnBuy.setVisibility(View.VISIBLE);
                             btnTry.setVisibility(View.VISIBLE);
                             btnBuy.setText("Mua ngay (" + formatAmount(sach.getGiaTien()) + ")");
+                            Log.i("người dùng", "4");
                         }
-                    }else{
+                    }
+                    else{
                         btnRead.setVisibility(View.GONE);
                         btnBuy.setVisibility(View.VISIBLE);
                         btnTry.setVisibility(View.VISIBLE);
                         btnBuy.setText("Mua ngay (" + formatAmount(sach.getGiaTien()) + ")");
+                        Log.i("người dùng", "5");
                     }
                 }
             }
@@ -414,25 +420,29 @@ public class Book_Detail extends AppCompatActivity{
                                 btnBuy.setVisibility(View.VISIBLE);
                                 btnBuy.setText("Mua ngay (" + formatAmount(sach.getGiaTien()) + ")");
                                 btnTry.setVisibility(View.GONE);
+                                Log.i("người dùng", "6");
+                                break;
                             }else{
                                 btnRead.setVisibility(View.GONE);
                                 btnBuy.setVisibility(View.VISIBLE);
                                 btnTry.setVisibility(View.VISIBLE);
                                 btnBuy.setText("Mua ngay (" + formatAmount(sach.getGiaTien()) + ")");
+                                Log.i("người dùng", "7");
                             }
-                            break;
                         }
                     }else{
                         btnRead.setVisibility(View.GONE);
                         btnBuy.setVisibility(View.VISIBLE);
                         btnTry.setVisibility(View.VISIBLE);
                         btnBuy.setText("Mua ngay (" + formatAmount(sach.getGiaTien()) + ")");
+                        Log.i("người dùng", "8");
                     }
                 }else{
                     btnRead.setVisibility(View.GONE);
                     btnBuy.setVisibility(View.VISIBLE);
                     btnTry.setVisibility(View.VISIBLE);
                     btnBuy.setText("Mua ngay (" + formatAmount(sach.getGiaTien()) + ")");
+                    Log.i("người dùng", "9");
                 }
             }
             else{
@@ -440,6 +450,7 @@ public class Book_Detail extends AppCompatActivity{
                 btnBuy.setVisibility(View.VISIBLE);
                 btnTry.setVisibility(View.VISIBLE);
                 btnBuy.setText("Mua ngay (" + formatAmount(sach.getGiaTien()) + ")");
+                Log.i("người dùng", "10");
             }
         }
 
