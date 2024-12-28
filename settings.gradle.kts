@@ -25,5 +25,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "DatVeXemPhim"
+rootProject.name = "Doc_Sach_Truc_Tuyen"
 include(":app")
